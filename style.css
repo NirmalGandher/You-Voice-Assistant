@@ -1,0 +1,67 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+}
+
+h2.caption {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 40px;
+    color: #ccc;
+}
+
+.mic-button {
+    background-color: #00c853;
+    border: none;
+    padding: 25px;
+    border-radius: 50%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    animation: pulse 2s infinite;
+}
+
+.mic-button:hover {
+    transform: scale(1.1);
+}
+
+.mic-button i {
+    font-size: 2.5rem;
+    color: #fff;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 30px rgba(0, 200, 83, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 200, 83, 0);
+    }
+}
+
+.response-box {
+    margin-top: 40px;
+    font-size: 1.2rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #eee;
+}
+
+.footer {
+    margin-top: 80px;
+    font-size: 14px;
+    color: #bbb;
+}

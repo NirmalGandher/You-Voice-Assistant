@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jarvis - Your AI Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00ffe7;
+            text-shadow: 0 0 5px #00ffe7;
+        }
+        
+        #caption {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .mic-button {
+            background: #00ffe7;
+            border: none;
+            border-radius: 50%;
+            padding: 20px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 15px #00ffe7;
+        }
+        
+        .mic-button:hover {
+            box-shadow: 0 0 25px #00ffe7;
+        }
+        
+        .mic-button img {
+            width: 30px;
+            height: 30px;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        #chat-container {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .chat-bubble {
+            background: #1c1c1c;
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 80%;
+            align-self: flex-end;
+            text-align: left;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .bot-bubble {
+            background: #00ffe7;
+            color: #000;
+            align-self: flex-start;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>JARVIS</h1>
+    <div id="caption">Your smart voice assistant is listening…</div>
+    <button class="mic-button" id="start-btn">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/microphone.png" alt="mic" />
+  </button>
+    <div id="chat-container"></div>
+    <audio id="intro-audio" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-double-click-on-mouse-275.wav" autoplay></audio>
+
+    <script>
+        const btn = document.getElementById('start-btn');
+        const chat = document.getElementById('chat-container');
+        const synth = window.speechSynthesis;
+        const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        let userName = localStorage.getItem("userName") || "";
+
+        function speak(message) {
+            const utter = new SpeechSynthesisUtterance(message);
+            synth.speak(utter);
+            addBotBubble(message);
+        }
+
+        function addUserBubble(text) {
+            const bubble = document.createElement("div");
+            bubble.className = "chat-bubble";
+            bubble.textContent = text;
+            chat.appendChild(bubble);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function addBotBubble(text) {
+            const bubble = document.createElement("div");
+            bubble.className = "chat-bubble bot-bubble";
+            bubble.textContent = text;
+            chat.appendChild(bubble);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function processCommand(command) {
+            const c = command.toLowerCase();
+            addUserBubble(command);
+
+            if (c.includes("hello")) speak(userName ? `Hello ${userName}` : "Hello there!");
+            else if (c.includes("my name is")) {
+                const name = c.split("my name is")[1].trim();
+                localStorage.setItem("userName", name);
+                userName = name;
+                speak(`Nice to meet you, ${name}`);
+            } else if (c.includes("how are you")) speak("I'm doing great! Hope you're doing well too!");
+            else if (c.includes("good morning") || c.includes("good night") || c.includes("good afternoon")) speak(getTimeGreeting());
+            else if (c.includes("open youtube")) {
+                speak("Opening YouTube");
+                window.open("https://youtube.com", "_blank");
+            } else if (c.includes("open google")) {
+                speak("Opening Google");
+                window.open("https://google.com", "_blank");
+            } else if (c.includes("open facebook")) {
+                speak("Opening Facebook");
+                window.open("https://facebook.com", "_blank");
+            } else if (c.includes("open whatsapp")) {
+                speak("Opening WhatsApp");
+                window.open("https://web.whatsapp.com", "_blank");
+            } else if (c.includes("open tiktok")) {
+                speak("Opening TikTok");
+                window.open("https://www.tiktok.com", "_blank");
+            } else if (c.includes("open chatgpt")) {
+                speak("Opening ChatGPT");
+                window.open("https://chat.openai.com", "_blank");
+            } else if (c.includes("tell me a joke")) speak("Why don't scientists trust atoms? Because they make up everything!");
+            else if (c.includes("what's the time") || c.includes("what is the time")) {
+                const now = new Date();
+                const time = now.toLocaleTimeString();
+                speak(`The current time is ${time}`);
+            } else {
+                fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer YOUR_OPENAI_API_KEY'
+                        },
+                        body: JSON.stringify({
+                            model: "gpt-3.5-turbo",
+                            messages: [{
+                                role: "user",
+                                content: command
+                            }]
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const reply = data.choices[0].message.content;
+                        speak(reply);
+                    })
+                    .catch(() => speak("Sorry, I didn't understand that and couldn't reach ChatGPT."));
+            }
+        }
+
+        function getTimeGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Good morning";
+            else if (hour < 18) return "Good afternoon";
+            else return "Good evening";
+        }
+
+        btn.addEventListener('click', () => {
+            recognition.start();
+        });
+
+        recognition.onresult = (e) => {
+            const transcript = e.results[0][0].transcript;
+            processCommand(transcript);
+        };
+    </script>
+</body>
+
+</html>
