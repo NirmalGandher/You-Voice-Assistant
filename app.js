@@ -33,8 +33,10 @@ function startListening() {
             speak("I'm doing fantastic! Always ready to assist you.");
         } else if (command.includes("thank you")) {
             speak("You're welcome!");
+        } else if (command.includes("okay bye") || command.includes("ok bye") || command.includes("bye")) {
+            speak("Bye! Take care. See you next time.");
         } else if (command.includes("what is your name")) {
-            speak("I'm your personal assistant Jarvis, at your service.");
+            speak("I'm your personal Nirmal Gandher's Voice Assistant, at your service.");
         } else if (command.includes("open youtube")) {
             speak("Opening YouTube");
             window.open("https://youtube.com", "_blank");
@@ -53,7 +55,14 @@ function startListening() {
         } else if (command.includes("open chatgpt")) {
             speak("Opening ChatGPT");
             window.open("https://chat.openai.com", "_blank");
+        } else if (command.includes("open github")) {
+            speak("Opening GitHub");
+            window.open("https://github.com", "_blank");
+        } else if (command.includes("open linkedin")) {
+            speak("Opening LinkedIn");
+            window.open("https://www.linkedin.com", "_blank");
         }
+
         // 🆕 Custom Commands
         else if (command.includes("who created you") || command.includes("who made you")) {
             speak("Nirmal Gandher Sahib, Computer Science student.");
